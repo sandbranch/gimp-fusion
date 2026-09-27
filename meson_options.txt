@@ -1,0 +1,8 @@
+option('plugindir', type: 'string', value: '',
+  description: 'Folder of GIMP plug-ins, default: the system folder of GIMP. '
+    + 'For a user installation use e.g. ~/.config/GIMP/3.2/plug-ins')
+option('plugin', type: 'feature', value: 'auto',
+  description: 'Build the GIMP plug-in; disabled builds only the core, the '
+    + 'command line tool and the unit tests, which need no GIMP')
+option('openmp', type: 'feature', value: 'auto',
+  description: 'Use OpenMP threads for the loops over pixels')
