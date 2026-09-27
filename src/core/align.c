@@ -252,9 +252,9 @@ pyr_build (Pyr *p, const float *img, const float *mask, int w, int h)
         return 0;
       fz_downsample (p->p[l - 1], p->w[l - 1], p->h[l - 1], p->p[l]);
       fz_downsample (p->m[l - 1], p->w[l - 1], p->h[l - 1], p->m[l]);
-      /* a coarse pixel counts if its whole footprint did */
+      /* a coarse pixel counts if most of its footprint did */
       for (i = 0; i < (size_t) w2 * h2; i++)
-        p->m[l][i] = p->m[l][i] > 0.999f ? 1.0f : 0.0f;
+        p->m[l][i] = p->m[l][i] > 0.75f ? 1.0f : 0.0f;
     }
   return 1;
 }
@@ -262,7 +262,7 @@ pyr_build (Pyr *p, const float *img, const float *mask, int w, int h)
 /* (I - G I) / sqrt (G (I - G I)^2 + eps^2), eps a tenth of the mean
  * local contrast */
 static float *
-local_normalize (const float *src, int w, int h, double sigma)
+local_normalize (const float *src, int w, int h, double sigma, int normalize)
 {
   size_t    n = (size_t) w * h;
   float    *d = fz_alloc_floats (n, 0), *v = fz_alloc_floats (n, 0);
@@ -278,6 +278,12 @@ local_normalize (const float *src, int w, int h, double sigma)
       free (d);
       free (v);
       return NULL;
+    }
+  if (! normalize)
+    {
+      /* the plain image, with the slight blur */
+      free (d);
+      return v;
     }
   for (i = 0; i < (ptrdiff_t) n; i++)
     {
@@ -301,57 +307,36 @@ local_normalize (const float *src, int w, int h, double sigma)
   return d;
 }
 
-/* the mask shrunk by r pixels, the outside of the image counting as
- * masked: a minimum over rows, then over columns */
+/* the pixels to compare: valid themselves, in a neighbourhood that is
+ * nearly all valid (the local normalization there saw the same kind of
+ * pixels as its counterpart in the other image), and at least margin
+ * pixels from the image's edge. Scattered masked pixels cost only
+ * themselves; a masked area also its surroundings. */
 static float *
-erode (const float *m, int w, int h, int r)
+neighbourhood_mask (const float *m, int w, int h, double sigma, int margin)
 {
   size_t    n = (size_t) w * h;
-  float    *t = fz_alloc_floats (n, 0), *o = fz_alloc_floats (n, 0);
+  float    *o = fz_alloc_floats (n, 0);
   ptrdiff_t y;
 
-  if (! t || ! o)
+  if (! o || ! fz_gauss_blur (m, o, w, h, sigma))
     {
-      free (t);
       free (o);
       return NULL;
     }
 #pragma omp parallel for schedule(static)
   for (y = 0; y < h; y++)
     {
-      const float *s = m + (size_t) y * w;
-      float       *d = t + (size_t) y * w;
-      int          x, last = -1 - r;   /* the last masked position on the left */
+      int x;
 
       for (x = 0; x < w; x++)
         {
-          if (s[x] < 0.5f)
-            last = x;
-          d[x] = x - last > r && x >= r ? 1.0f : 0.0f;
-        }
-      last = w + r;
-      for (x = w - 1; x >= 0; x--)
-        {
-          if (s[x] < 0.5f)
-            last = x;
-          if (last - x <= r || x + r >= w)
-            d[x] = 0.0f;
-        }
-    }
-#pragma omp parallel for schedule(static)
-  for (y = 0; y < h; y++)
-    {
-      int x, j, ok;
+          size_t i = (size_t) y * w + x;
+          int    in = x >= margin && x < w - margin && y >= margin && y < h - margin;
 
-      for (x = 0; x < w; x++)
-        {
-          ok = y >= r && y + r < h;
-          for (j = -r; j <= r && ok; j++)
-            ok = t[(size_t) (y + j) * w + x] >= 0.5f;
-          o[(size_t) y * w + x] = ok ? 1.0f : 0.0f;
+          o[i] = in && m[i] >= 0.5f && o[i] >= 0.95f ? 1.0f : 0.0f;
         }
     }
-  free (t);
   return o;
 }
 
@@ -569,8 +554,10 @@ refine_level (const float *na, const float *ma, const float *nb, const float *mb
               /* ESM (Benhimane and Malis 2004): the mean of both images'
                * gradients converges faster and without the bias of
                * interpolated gradients alone */
-              vgx = 0.5f * (bilinear (gx, w, h, xs, ys, &in3) + hx[i0]);
-              vgy = 0.5f * (bilinear (gy, w, h, xs, ys, &in4) + hy[i0]);
+              vgx = bilinear (gx, w, h, xs, ys, &in3);
+              vgy = bilinear (gy, w, h, xs, ys, &in4);
+              vgx = 0.5f * (vgx + hx[i0]);
+              vgy = 0.5f * (vgy + hy[i0]);
               ar = na[i0];
               r = gain * vb + offset - ar;
               /* Huber: quadratic up to 1 (in units of local contrast) */
@@ -662,8 +649,8 @@ refine_level (const float *na, const float *ma, const float *nb, const float *mb
 int
 fz_align_pair (const float *a, const float *mask_a,
                const float *b, const float *mask_b, int w, int h,
-               FzAlignModel model, int max_shift, FzTransform *t,
-               double *confidence)
+               FzAlignModel model, int max_shift, int normalize,
+               FzTransform *t, double *confidence)
 {
   Pyr    pa, pb;
   int    ok = 0, l, pl;
@@ -745,13 +732,13 @@ fz_align_pair (const float *a, const float *mask_a,
     ;
   for (; l >= 0; l--)
     {
-      float *na = local_normalize (pa.p[l], pa.w[l], pa.h[l], 4.0);
-      float *nb = local_normalize (pb.p[l], pb.w[l], pb.h[l], 4.0);
+      float *na = local_normalize (pa.p[l], pa.w[l], pa.h[l], 4.0, normalize);
+      float *nb = local_normalize (pb.p[l], pb.w[l], pb.h[l], 4.0, normalize);
       /* near an edge or a masked pixel, the local normalization saw other
        * pixels than its counterpart in the other image: left out */
       int    margin = FZ_MIN (14, FZ_MIN (pa.w[l], pa.h[l]) / 8);
-      float *ma = erode (pa.m[l], pa.w[l], pa.h[l], margin);
-      float *mb = erode (pb.m[l], pb.w[l], pb.h[l], margin);
+      float *ma = neighbourhood_mask (pa.m[l], pa.w[l], pa.h[l], 4.0, margin);
+      float *mb = neighbourhood_mask (pb.m[l], pb.w[l], pb.h[l], 4.0, margin);
       int    r;
 
       if (! na || ! nb || ! ma || ! mb)
@@ -761,6 +748,21 @@ fz_align_pair (const float *a, const float *mask_a,
           free (ma);
           free (mb);
           goto done;
+        }
+      if (getenv ("FZ_DEBUG"))
+        {
+          double s0 = 0, s1 = 0, s2 = 0, s3 = 0;
+          size_t q;
+
+          for (q = 0; q < (size_t) pa.w[l] * pa.h[l]; q++)
+            {
+              s0 += pa.m[l][q];
+              s1 += ma[q];
+              s2 += pb.m[l][q];
+              s3 += mb[q];
+            }
+          fprintf (stderr, "masks level %d: a %.0f -> %.0f, b %.0f -> %.0f of %d\n", l, s0, s1,
+                   s2, s3, pa.w[l] * pa.h[l]);
         }
       r = refine_level (na, ma, nb, mb, pa.w[l], pa.h[l],
                         (double) (1 << l), cx, cy, model, l == 0 ? 8 : 30, t, &ncc);
@@ -801,10 +803,22 @@ luma_and_mask (const FzImage *img, const float *valid, float *y, float *m)
         lo = FZ_MIN (lo, y[i]);
         hi = FZ_MAX (hi, y[i]);
       }
-  /* clipped: within a hair of the darkest or brightest value, when those
-   * are the ends of the range (0 and 1) */
-  mlo = lo <= 0.0f ? 0.004f : -1e30f;
-  mhi = hi >= 1.0f ? 0.996f : 1e30f;
+  /* clipped: at the darkest or the brightest value, when that value is
+   * an end of the range (0 or 1) and at least 0.2 % of the pixels sit
+   * there, as a clipping sensor leaves them; a few pixels at 0 in a dark
+   * picture are not clipping */
+  {
+    size_t nlo = 0, nhi = 0;
+
+    for (i = 0; i < (ptrdiff_t) n; i++)
+      if (valid[i] >= 0.5f)
+        {
+          nlo += y[i] <= lo + 1e-6f;
+          nhi += y[i] >= hi - 1e-6f;
+        }
+    mlo = lo <= 0.0f && nlo > n / 500 ? lo + 1e-6f : -1e30f;
+    mhi = hi >= 1.0f && nhi > n / 500 ? hi - 1e-6f : 1e30f;
+  }
 #pragma omp parallel for schedule(static)
   for (i = 0; i < (ptrdiff_t) n; i++)
     m[i] = valid[i] >= 0.5f && y[i] > mlo && y[i] < mhi ? 1.0f : 0.0f;
@@ -881,7 +895,7 @@ fz_align (const FzSource *src, const FzAlignParams *p, FzTransform *out,
             luma_and_mask (img, valid, yk, mk);
             /* t: positions in image k - dir to positions in image k */
             if (! fz_align_pair (yp, mp, yk, mk, src->w, src->h, p->model,
-                                 p->max_shift, &t, &conf))
+                                 p->max_shift, p->normalize, &t, &conf))
               {
                 fz_set_error (error, "not enough memory to align image %d", k + 1);
                 goto fail;

@@ -11,7 +11,7 @@
  * Options: --contrast= --saturation= --exposure= --sigma= --levels=
  * --no-clip; --method=pyramid|coeff|soft|pixels --measure=laplacian|variance
  * --noise= --window= --power= --depth-smooth=; --align=none|translation|
- * scale|similarity --reference=K; --threads=N; --stats (time and peak
+ * scale|similarity --reference=K --normalize=0|1; --threads=N; --stats (time and peak
  * memory on stderr); --synthetic=W,H,N,C instead of input files: a stack
  * made up while it is read (for benchmarks: no files, no disk).
  *
@@ -267,7 +267,7 @@ main (int argc, char **argv)
   static const char *const models[] = { "none", "translation", "scale", "similarity", NULL };
   FzExposureParams ep;
   FzFocusParams    fp;
-  FzAlignParams    ap = { FZ_ALIGN_NONE, -1, 0 };
+  FzAlignParams    ap = { FZ_ALIGN_NONE, -1, 0, -1 };
   const char      *cmd, *outp = NULL, *depthp = NULL;
   char           **inputs;
   int              nin = 0, i, stats = 0, status = 1, sw = 0, sh = 0, sn = 0, sc = 0;
@@ -323,6 +323,8 @@ main (int argc, char **argv)
         ap.model = v;
       else if ((o = optval (a, "--model")) && choose (o, models, &v))
         ap.model = v;
+      else if ((o = optval (a, "--normalize")))
+        ap.normalize = atoi (o);
       else if ((o = optval (a, "--reference")))
         ap.reference = atoi (o);
       else if ((o = optval (a, "--threads")))
@@ -450,6 +452,10 @@ main (int argc, char **argv)
   /* alignment first, if asked for (the align command always aligns) */
   if (! strcmp (cmd, "align") && ap.model == FZ_ALIGN_NONE)
     ap.model = FZ_ALIGN_SIMILARITY;
+  /* local normalization for exposures (and by default for align), plain
+   * images for focus stacks */
+  if (ap.normalize < 0)
+    ap.normalize = strcmp (cmd, "focus") != 0;
   if (ap.model != FZ_ALIGN_NONE)
     {
       double ta = now ();

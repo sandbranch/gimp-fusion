@@ -92,7 +92,18 @@ fz_exposure_weights (const FzImage *img, const float *valid,
       float w = 1.0f;
 
       if (con)
-        w *= power (fabsf (con[i]), wc);
+        {
+          /* contrast below 1e-6 of the value is none: it is below the
+           * resolution of 16-bit data, and it is what float rounding
+           * leaves on ramps where Mertens' code (in double) gets exactly
+           * 0; left in, those crumbs would outweigh its 1e-12 and decide
+           * areas that no image shows any contrast in */
+          float cv = fabsf (con[i]);
+
+          if (cv < 1e-6f * FZ_MAX (1.0f, fabsf (img->p[i])))
+            cv = 0.0f;
+          w *= power (cv, wc);
+        }
       if (ws > 0.0f && c >= 3)
         {
           float r = img->p[i], g = img->p[n + i], b = img->p[2 * n + i];

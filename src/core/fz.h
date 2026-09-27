@@ -205,6 +205,10 @@ typedef struct
   FzAlignModel model;
   int          reference;   /* the image the others are aligned to; -1: middle */
   int          max_shift;   /* percent of the smaller side: 0 = 25 */
+  /* compare locally normalized images (for other exposures: contrast
+   * and brightness may differ) rather than the plain ones (with a gain
+   * and an offset; better for focus stacks, where brightness stays) */
+  int          normalize;
 } FzAlignParams;
 
 /* Finds for every image the transform from the reference frame to it
@@ -221,8 +225,8 @@ int fz_align (const FzSource *src, const FzAlignParams *p, FzTransform *out,
  * mask_a and mask_b may be NULL. */
 int fz_align_pair (const float *a, const float *mask_a,
                    const float *b, const float *mask_b, int w, int h,
-                   FzAlignModel model, int max_shift, FzTransform *t,
-                   double *confidence);
+                   FzAlignModel model, int max_shift, int normalize,
+                   FzTransform *t, double *confidence);
 
 /* phase correlation of two planes of the same size: the shift (dx, dy)
  * with a(x, y) ~ b(x + dx, y + dy), to a fraction of a pixel; peak gets

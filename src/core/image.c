@@ -189,7 +189,12 @@ fz_laplacian (const float *src, float *dst, int w, int h)
           float l = s[x > 0 ? x - 1 : 0];
           float r = s[x < w - 1 ? x + 1 : w - 1];
 
-          d[x] = up[x] + dn[x] + l + r - 4.0f * s[x];
+          float c = s[x];
+
+          /* as differences, so that a flat patch gives exactly 0 (the sum
+           * minus 4 c leaves rounding crumbs, which outweigh Mertens'
+           * 1e-12 in flat, clipped areas) */
+          d[x] = ((up[x] - c) + (dn[x] - c)) + ((l - c) + (r - c));
         }
     }
 }

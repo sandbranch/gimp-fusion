@@ -107,7 +107,7 @@ test_pair (FzAlignModel model, FzTransform truth, const char *what, double limit
 
         b->p[i] = v > 1.0f ? 1.0f : v < 0.0f ? 0.0f : sqrtf (v);
       }
-  fz_align_pair (a->p, NULL, b->p, NULL, w, h, model, 0, &t, &conf);
+  fz_align_pair (a->p, NULL, b->p, NULL, w, h, model, 0, photometric, &t, &conf);
   err = corner_error (&t, &truth, w, h);
   check (err < limit, "%s: found to %.4f pixels at the corners (confidence %.3f)",
          what, err, conf);
@@ -123,7 +123,7 @@ test_stack (void)
   FzImage     *img[5];
   ArraySource  as;
   FzSource     src;
-  FzAlignParams p = { FZ_ALIGN_SIMILARITY, -1, 0 };
+  FzAlignParams p = { FZ_ALIGN_SIMILARITY, -1, 0, 0 };
   double       conf[5], worst = 0.0;
   char        *err = NULL;
 
