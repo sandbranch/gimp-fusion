@@ -264,6 +264,41 @@ test_validity (void)
       }
   check (bad == 0, "exposure fusion (3 levels): where only one image has pixels, "
          "that image (%d pixels off by more than 1e-4)", bad);
+  /* the same image three times, none of them covering a strip on the
+   * left: where they do, the image, also far from the strip (the weight
+   * pyramid is normalized per level, so the coarse levels do not darken) */
+  {
+    FzImage *same[3] = { a, a, a };
+    float   *vs[3] = { va, va, va };
+    FzFocusParams fq;
+    double   worst = 0.0, worst_f = 0.0;
+    int      xx, yy, ch2;
+
+    for (y = 0; y < h; y++)
+      for (x = 0; x < w; x++)
+        va[y * w + x] = x < 16 ? 0.0f : 1.0f;
+    array_source (&src, &as, same, vs, 3);
+    fz_fuse_exposures (&src, &ep, out, alpha, NULL, &err);
+    for (ch2 = 0; ch2 < 3; ch2++)
+      for (yy = 0; yy < h; yy++)
+        for (xx = 16; xx < w; xx++)
+          worst = fmax (worst, fabs (out->p[ch2 * n + yy * w + xx] - a->p[ch2 * n + yy * w + xx]));
+    check (worst < 1e-5 && alpha[0] == 0.0f && alpha[20] == 1.0f,
+           "exposure fusion: copies that all leave a strip empty give the image where "
+           "they cover it (%.2g), transparent in the strip", worst);
+    fz_focus_params_default (&fq);
+    fq.clip = 0;
+    fq.method = FZ_FOCUS_SOFT;
+    fz_focus_stack (&src, &fq, out, alpha, NULL, NULL, &err);
+    for (ch2 = 0; ch2 < 3; ch2++)
+      for (yy = 0; yy < h; yy++)
+        for (xx = 16; xx < w; xx++)
+          worst_f = fmax (worst_f, fabs (out->p[ch2 * n + yy * w + xx] - a->p[ch2 * n + yy * w + xx]));
+    check (worst_f < 1e-5, "focus stack (soft): the same (%.2g)", worst_f);
+    for (y = 0; y < h * w; y++)
+      va[y] = 1.0f;
+    array_source (&src, &as, stack, valid, 2);
+  }
   /* nothing valid: 0 and transparent */
   for (y = 0; y < h * w; y++)
     va[y] = vb[y] = 0.0f;

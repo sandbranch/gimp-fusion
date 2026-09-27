@@ -29,8 +29,14 @@ double  fz_now          (void);
 void    fz_report       (FzProgress *prog, double fraction);
 
 /* acc += Gaussian pyramid (weight) * Laplacian pyramid (img), level by
- * level; img (acc->c planes of w x h) and weight (w x h, NULL: 1) are used
- * as scratch space and hold garbage afterwards */
-int fz_pyramid_accumulate (FzPyramid *acc, float *img, float *weight);
+ * level, and wsum (one channel, may be NULL) += Gaussian pyramid (weight);
+ * img (acc->c planes of w x h) and weight (w x h, NULL: 1) are used as
+ * scratch space and hold garbage afterwards */
+int fz_pyramid_accumulate (FzPyramid *acc, FzPyramid *wsum, float *img, float *weight);
+
+/* acc /= wsum at every level (0 where wsum is 0): where images are
+ * missing the blended weights no longer sum to 1, and without this the
+ * coarse levels would darken far around such areas */
+void fz_pyramid_normalize (FzPyramid *acc, const FzPyramid *wsum);
 
 #endif

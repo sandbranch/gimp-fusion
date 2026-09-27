@@ -280,7 +280,7 @@ fz_pyramid_collapse (FzPyramid *pyr)
 }
 
 int
-fz_pyramid_accumulate (FzPyramid *acc, float *img, float *weight)
+fz_pyramid_accumulate (FzPyramid *acc, FzPyramid *wsum, float *img, float *weight)
 {
   /* g and wt are the current level; they belong to the caller at level 0
    * and to us (own) below */
@@ -317,6 +317,14 @@ fz_pyramid_accumulate (FzPyramid *acc, float *img, float *weight)
             }
           if (weight)
             fz_downsample (wt, w, h, w1);
+        }
+      if (wsum && ok)
+        {
+          float *ws = wsum->lev[l];
+
+#pragma omp parallel for schedule(static)
+          for (i = 0; i < (ptrdiff_t) n; i++)
+            ws[i] += weight ? wt[i] : 1.0f;
         }
       for (ch = 0; ch < acc->c && ok; ch++)
         {
@@ -355,6 +363,28 @@ fz_pyramid_accumulate (FzPyramid *acc, float *img, float *weight)
   return ok;
 }
 
+void
+fz_pyramid_normalize (FzPyramid *acc, const FzPyramid *wsum)
+{
+  int l, ch;
+
+  for (l = 0; l < acc->levels; l++)
+    {
+      size_t       n = (size_t) acc->w[l] * acc->h[l];
+      const float *ws = wsum->lev[l];
+
+      for (ch = 0; ch < acc->c; ch++)
+        {
+          float    *a = acc->lev[l] + ch * n;
+          ptrdiff_t i;
+
+#pragma omp parallel for schedule(static)
+          for (i = 0; i < (ptrdiff_t) n; i++)
+            a[i] = ws[i] > 1e-6f ? a[i] / ws[i] : 0.0f;
+        }
+    }
+}
+
 FzPyramid *
 fz_laplacian_pyramid (const FzImage *img, int levels)
 {
@@ -370,7 +400,7 @@ fz_laplacian_pyramid (const FzImage *img, int levels)
       return NULL;
     }
   memcpy (copy, img->p, (size_t) img->w * img->h * img->c * sizeof (float));
-  if (! fz_pyramid_accumulate (pyr, copy, NULL))
+  if (! fz_pyramid_accumulate (pyr, NULL, copy, NULL))
     {
       fz_pyramid_free (pyr);
       pyr = NULL;

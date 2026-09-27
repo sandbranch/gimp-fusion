@@ -132,14 +132,14 @@ test_reduce_expand (void)
   }
   {
     /* a constant stays that constant, exactly */
-    float c[35], d[9], u[35] = { 0 };
+    float c[35], d[12], u[35] = { 0 };
     int   i, ok = 1;
 
     for (i = 0; i < 35; i++)
       c[i] = 0.3f;
     fz_downsample (c, 7, 5, d);
     fz_upsample_add (d, 4, 3, u, 7, 5, 1.0f);
-    for (i = 0; i < 9; i++)
+    for (i = 0; i < 12; i++)
       ok &= fabsf (d[i] - 0.3f) < 1e-7f;
     for (i = 0; i < 35; i++)
       ok &= fabsf (u[i] - 0.3f) < 1e-7f;

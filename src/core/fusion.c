@@ -242,7 +242,7 @@ fz_fuse_exposures (const FzSource *src, const FzExposureParams *p,
                    char **error)
 {
   Scratch    s = { 0 };
-  FzPyramid *acc = NULL;
+  FzPyramid *acc = NULL, *wsum = NULL;
   float     *sum = NULL;
   size_t     n;
   int        k, ok = 0;
@@ -279,7 +279,8 @@ fz_fuse_exposures (const FzSource *src, const FzExposureParams *p,
     }
 
   acc = fz_pyramid_new (src->w, src->h, src->c, p->levels);
-  if (! acc)
+  wsum = acc ? fz_pyramid_new (src->w, src->h, 1, acc->levels) : NULL;
+  if (! wsum)
     goto oom;
 
   /* pass 2: blend */
@@ -292,7 +293,7 @@ fz_fuse_exposures (const FzSource *src, const FzExposureParams *p,
 #pragma omp parallel for schedule(static)
       for (i = 0; i < (ptrdiff_t) n; i++)
         s.weight[i] = sum[i] > 0.0f ? s.weight[i] / sum[i] : 0.0f;
-      if (! fz_pyramid_accumulate (acc, s.img->p, s.weight))
+      if (! fz_pyramid_accumulate (acc, wsum, s.img->p, s.weight))
         goto oom;
       fz_report (prog, 0.3 + 0.65 * (k + 1) / src->n);
     }
@@ -301,6 +302,9 @@ fz_fuse_exposures (const FzSource *src, const FzExposureParams *p,
   free (sum);
   sum = NULL;
 
+  fz_pyramid_normalize (acc, wsum);
+  fz_pyramid_free (wsum);
+  wsum = NULL;
   if (! fz_pyramid_collapse (acc))
     goto oom;
   finish (acc, out, p->clip);
@@ -315,6 +319,7 @@ done:
   scratch_free (&s);
   free (sum);
   fz_pyramid_free (acc);
+  fz_pyramid_free (wsum);
   if (prog)
     prog->seconds_fuse = fz_now () - t0;
   return ok;
@@ -666,7 +671,7 @@ fz_focus_stack (const FzSource *src, const FzFocusParams *p,
   Scratch    s = { 0 };
   Pick       pk = { 0 };
   Coeff      cf = { 0 };
-  FzPyramid *acc = NULL;
+  FzPyramid *acc = NULL, *wsum = NULL;
   float     *m = NULL;
   size_t     n;
   int        k, ok = 0, have_pick = 0;
@@ -766,7 +771,8 @@ fz_focus_stack (const FzSource *src, const FzFocusParams *p,
   else
     {
       acc = fz_pyramid_new (src->w, src->h, src->c, p->levels);
-      if (! acc)
+      wsum = acc ? fz_pyramid_new (src->w, src->h, 1, acc->levels) : NULL;
+      if (! wsum)
         goto oom;
       for (k = 0; k < src->n; k++)
         {
@@ -797,12 +803,13 @@ fz_focus_stack (const FzSource *src, const FzFocusParams *p,
               for (i = 0; i < (ptrdiff_t) n; i++)
                 s.weight[i] = pk.idx[i] == k ? 1.0f : 0.0f;
             }
-          if (! fz_pyramid_accumulate (acc, s.img->p, s.weight))
+          if (! fz_pyramid_accumulate (acc, wsum, s.img->p, s.weight))
             goto oom;
           fz_report (prog, 0.4 + 0.55 * (k + 1) / src->n);
         }
       scratch_free (&s);
       memset (&s, 0, sizeof s);
+      fz_pyramid_normalize (acc, wsum);
       if (! fz_pyramid_collapse (acc))
         goto oom;
       finish (acc, out, p->clip);
@@ -823,6 +830,7 @@ done:
     pick_free (&pk);
   free (m);
   fz_pyramid_free (acc);
+  fz_pyramid_free (wsum);
   fz_pyramid_free (cf.acc);
   fz_pyramid_free (cf.sal);
   free (cf.rw);
