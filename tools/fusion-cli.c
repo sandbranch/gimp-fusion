@@ -25,7 +25,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/resource.h>
 #include <time.h>
 
 /* ------------------------------------------------------------------ PFM */
@@ -521,11 +520,19 @@ main (int argc, char **argv)
 done:
   if (stats)
     {
-      struct rusage ru;
+      /* VmHWM: the peak of this process's own memory (ru_maxrss would
+       * survive an execve) */
+      FILE  *f = fopen ("/proc/self/status", "r");
+      char   line[256];
+      double mb = -1.0;
 
-      getrusage (RUSAGE_SELF, &ru);
-      fprintf (stderr, "stats: seconds %.3f align %.3f fuse %.3f maxrss_mb %.1f loads %d\n",
-               now () - t0, t_align, prog.seconds_fuse, ru.ru_maxrss / 1024.0, fs.loads);
+      while (f && fgets (line, sizeof line, f))
+        if (! strncmp (line, "VmHWM:", 6))
+          mb = atof (line + 6) / 1024.0;
+      if (f)
+        fclose (f);
+      fprintf (stderr, "stats: seconds %.3f align %.3f fuse %.3f peak_mb %.1f loads %d\n",
+               now () - t0, t_align, prog.seconds_fuse, mb, fs.loads);
     }
   fz_warp_source_free (ws);
   free (tr);

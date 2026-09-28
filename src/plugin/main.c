@@ -27,7 +27,6 @@
  */
 #include <stdlib.h>
 #include <string.h>
-#include <sys/resource.h>
 
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
@@ -416,17 +415,23 @@ fail_msg (GimpProcedure *procedure, const char *what, char *msg)
 }
 
 /* statistics for tests and benchmarks, when FUSION_STATS is set: on
- * stderr, where GIMP's log catches them */
+ * stderr, where GIMP's log catches them. The peak memory is VmHWM of
+ * /proc/self/status: getrusage's ru_maxrss survives execve, so in a
+ * plug-in (forked from GIMP) it would be GIMP's own peak. */
 static void
 stats (const char *what, int n, int w, int h, double seconds, int loads)
 {
-  struct rusage ru;
+  gchar *status = NULL, *hwm;
+  double mb = -1.0;
 
   if (! g_getenv ("FUSION_STATS"))
     return;
-  getrusage (RUSAGE_SELF, &ru);
-  g_printerr ("FUSION_STATS %s layers %d size %dx%d seconds %.3f maxrss_mb %.1f loads %d\n",
-              what, n, w, h, seconds, ru.ru_maxrss / 1024.0, loads);
+  if (g_file_get_contents ("/proc/self/status", &status, NULL, NULL) &&
+      (hwm = strstr (status, "VmHWM:")))
+    mb = g_ascii_strtod (hwm + 6, NULL) / 1024.0;
+  g_free (status);
+  g_printerr ("FUSION_STATS %s layers %d size %dx%d seconds %.3f peak_mb %.1f loads %d\n",
+              what, n, w, h, seconds, mb, loads);
 }
 
 static GimpValueArray *

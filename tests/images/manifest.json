@@ -1,0 +1,435 @@
+{
+ "about": "Freely licensed test images for tests/real.sh, fetched by tests/images/fetch.py into tests/output/images (not committed). Every licence was read on the source page; see the licence and page fields. Selected from a survey on 2026-09-28.",
+ "sets": [
+  {
+   "name": "gimp_ageratum_bracket",
+   "kind": "exposure",
+   "description": "Ageratum houstonianum flowers, 3-frame auto exposure bracket (EXIF bias -1/0/+1 EV, 1/50, 1/25, 1/13 s at f/16, ISO 800), Canon EOS 350D, 600x400 JPEG. Tiny, made for the GIMP wikibook HDR tutorial. Frames are aligned; ideal for fast unit tests. Ordered dark to bright.",
+   "licence": "CC0 1.0 on every file page ({{cc-zero}})",
+   "files": [
+    {
+     "title": "File:Gimp hdr under.jpg",
+     "download_url": "https://upload.wikimedia.org/wikipedia/commons/2/26/Gimp_hdr_under.jpg",
+     "description_page": "https://commons.wikimedia.org/wiki/File:Gimp_hdr_under.jpg",
+     "width": 600,
+     "height": 400,
+     "bytes": 44618,
+     "sha1": "04f40bdc4e2de66c260f411c561956dcb5ee6320",
+     "author_credit": "Reub2000",
+     "exif_exposure_time": "1/50",
+     "exif_exposure_bias": "-2/2",
+     "exposure_stops_rel_to_first": 0.0
+    },
+    {
+     "title": "File:Gimp hdr regular.jpg",
+     "download_url": "https://upload.wikimedia.org/wikipedia/commons/6/66/Gimp_hdr_regular.jpg",
+     "description_page": "https://commons.wikimedia.org/wiki/File:Gimp_hdr_regular.jpg",
+     "width": 600,
+     "height": 400,
+     "bytes": 49030,
+     "sha1": "b2c7d52fe9c9a3afe537ed3c1d0fe075e5535b81",
+     "author_credit": "Reub2000",
+     "exif_exposure_time": "1/25",
+     "exif_exposure_bias": "0/2",
+     "exposure_stops_rel_to_first": 1.0
+    },
+    {
+     "title": "File:Gimp hdr over.jpg",
+     "download_url": "https://upload.wikimedia.org/wikipedia/commons/e/ed/Gimp_hdr_over.jpg",
+     "description_page": "https://commons.wikimedia.org/wiki/File:Gimp_hdr_over.jpg",
+     "width": 600,
+     "height": 400,
+     "bytes": 49807,
+     "sha1": "bd50787da85bf81c398d524fdf2cc1eb82dc5fd6",
+     "author_credit": "Reub2000",
+     "exif_exposure_time": "1/13",
+     "exif_exposure_bias": "2/2",
+     "exposure_stops_rel_to_first": 1.94
+    }
+   ]
+  },
+  {
+   "name": "mars_mahli_sol5020_close",
+   "kind": "focus",
+   "description": "Curiosity rover MAHLI (Mars Hand Lens Imager) 8-slice focus stack of a brushed/abraded rock patch, sol 5020 (2026-09-20), 1584x1184 colour JPEG. Slices ordered by focus motor count ascending (15016 to 15184, step 24); higher count means nearer focus, so order is far to near. The rover's own onboard focus merge of exactly this stack (first-image motor count 15016, sol 5021) is included as reference_results. Shallow relief, so differences between slices are subtle.",
+   "licence": "NASA/JPL: 'Unless otherwise noted, images and video on JPL public web sites ... may be used for any purpose without prior permission' (https://www.jpl.nasa.gov/jpl-image-use-policy/, read 2026-09-28); NASA media guidelines: NASA content is 'generally not subject to copyright in the United States'; Wikimedia Commons tags MAHLI raw images PD-NASA. Credit: NASA/JPL-Caltech/MSSS.",
+   "files": [
+    {
+     "title": "5020MH0008480021804285C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804285C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641496",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 605842,
+     "sha1": "746d685b83a6640e3911c26e7234c9441dd9fe11",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15016
+    },
+    {
+     "title": "5020MH0008480021804286C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804286C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641497",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 688114,
+     "sha1": "6aa8263db518db68b5e4f2c97ebf400721a13bf4",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15040
+    },
+    {
+     "title": "5020MH0008480021804287C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804287C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641498",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 813380,
+     "sha1": "5e9e4bef3e9ffe784db0501df643d85f20d69430",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15064
+    },
+    {
+     "title": "5020MH0008480021804288C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804288C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641499",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 927152,
+     "sha1": "8f4652cf18462ccecf3cd8c19c7628228d54529f",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15088
+    },
+    {
+     "title": "5020MH0008480021804289C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804289C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641500",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 982127,
+     "sha1": "9f68960d2cdd4b5b92bf97f8cbfc683564cb544d",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15112
+    },
+    {
+     "title": "5020MH0008480021804290C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804290C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641501",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 945907,
+     "sha1": "de527fbf4a079339c2eb8b729a4184ad63f5b67c",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15136
+    },
+    {
+     "title": "5020MH0008480021804291C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804291C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641502",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 840130,
+     "sha1": "cc3f3a215c0fe67971bb53aa948f9a6735594441",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15160
+    },
+    {
+     "title": "5020MH0008480021804292C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05020/mhli/5020MH0008480021804292C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641503",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 717366,
+     "sha1": "42bc5f834a66fe8a75e3da88ff89abf71d28074a",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15184
+    }
+   ],
+   "reference_results": [
+    {
+     "title": "5021MH0001630001804332S00_DXXX",
+     "role": "onboard_range_map_gray",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05021/mhli/5021MH0001630001804332S00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641458",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 150522,
+     "sha1": "8c3fb0079f2f0a56649fcad867f0679dc4a61bce",
+     "author_credit": "NASA/JPL-Caltech/MSSS"
+    },
+    {
+     "title": "5021MH0001630001804331R00_DXXX",
+     "role": "onboard_focus_merge_rgb",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05021/mhli/5021MH0001630001804331R00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1641457",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 995926,
+     "sha1": "281aa5f52b2aab567932b546580e792e36b2a3fb",
+     "author_credit": "NASA/JPL-Caltech/MSSS"
+    }
+   ]
+  },
+  {
+   "name": "mars_mahli_sol5003_grains",
+   "kind": "focus",
+   "description": "Curiosity MAHLI 8-slice focus stack of a granular/sandy surface, sol 5003 (2026-09-02), 1584x1184 colour JPEG, wider focus sweep (motor count 14721 to 15309, step 84), so the ends are clearly defocused. Ordered far to near. Onboard focus merge (motor 14721, sol 5004) included as reference_results.",
+   "licence": "NASA/JPL: 'Unless otherwise noted, images and video on JPL public web sites ... may be used for any purpose without prior permission' (https://www.jpl.nasa.gov/jpl-image-use-policy/, read 2026-09-28); NASA media guidelines: NASA content is 'generally not subject to copyright in the United States'; Wikimedia Commons tags MAHLI raw images PD-NASA. Credit: NASA/JPL-Caltech/MSSS.",
+   "files": [
+    {
+     "title": "5003MH0007150031803959C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803959C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634812",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 434901,
+     "sha1": "52c92a32ea6dbbd3ba1e8697288f867e01d4121a",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 14721
+    },
+    {
+     "title": "5003MH0007150031803960C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803960C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634813",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 498192,
+     "sha1": "893044b7ebc7d9422cfe41f4f3c8f86e8f2b2f60",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 14805
+    },
+    {
+     "title": "5003MH0007150031803961C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803961C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634814",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 617958,
+     "sha1": "73a784e96a646b825bd0d187517b88818003f307",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 14889
+    },
+    {
+     "title": "5003MH0007150031803962C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803962C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634815",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 719971,
+     "sha1": "416f0dccfc34deb7fe867002e9bebdebce6ae409",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 14973
+    },
+    {
+     "title": "5003MH0007150031803963C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803963C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634816",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 692467,
+     "sha1": "e3f1bfea9af3ffcfdf3c04d26978154e5efa79fe",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15057
+    },
+    {
+     "title": "5003MH0007150031803964C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803964C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634817",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 516196,
+     "sha1": "1b9610195f9c7e6854e7c73c7dc7c8395cd236cc",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15141
+    },
+    {
+     "title": "5003MH0007150031803965C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803965C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634818",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 431789,
+     "sha1": "e6f6bf36b5024203de459d408d188b1c5f7ff2b3",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15225
+    },
+    {
+     "title": "5003MH0007150031803966C00_DXXX",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05003/mhli/5003MH0007150031803966C00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634819",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 390924,
+     "sha1": "4215becb7f66014f188c6322712b5f5c6e7302b8",
+     "author_credit": "NASA/JPL-Caltech/MSSS",
+     "focus_motor_count": 15309
+    }
+   ],
+   "reference_results": [
+    {
+     "title": "5004MH0009150001803998S00_DXXX",
+     "role": "onboard_range_map_gray",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05004/mhli/5004MH0009150001803998S00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634353",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 81170,
+     "sha1": "82b653e694bafa3167bd5fbc46e5a0dcdd1a1a9e",
+     "author_credit": "NASA/JPL-Caltech/MSSS"
+    },
+    {
+     "title": "5004MH0009150001803997R00_DXXX",
+     "role": "onboard_focus_merge_rgb",
+     "download_url": "https://mars.nasa.gov/msl-raw-images/msss/05004/mhli/5004MH0009150001803997R00_DXXX.jpg",
+     "description_page": "https://mars.nasa.gov/raw_images/1634351",
+     "width": 1584,
+     "height": 1184,
+     "bytes": 726831,
+     "sha1": "60c2f73ba080e0c667b36f47e1c6be4e0de502ba",
+     "author_credit": "NASA/JPL-Caltech/MSSS"
+    }
+   ]
+  },
+  {
+   "name": "bbbc006_u2os_hoechst_zstack",
+   "kind": "focus",
+   "description": "Widefield fluorescence z-stack of U2OS cell nuclei (Hoechst 33342, channel w1), well A02 site 1, 20x/0.45 NA, 696x520 16-bit grayscale TIFF (LZW). 34 planes z=00..33 at 2 um spacing; dataset says z=16 is optimal focus and z=11..23 are in focus. Direction (above/below) of low vs high z is not stated unambiguously. Files are only distributed inside one ~800 MB zip per z-plane; each slice can be fetched alone with HTTP range requests (offsets given), or use the local copies. Suggested small test subset: z=08,10,...,24 (9 planes, flag recommended_subset). Matching phalloidin channel (w2) for the same field was also extracted locally. Note: a flat monolayer, so the 'all in focus' result is close to the z=16 slice; good for testing sharpness selection and 16-bit handling, less for depth extension.",
+   "licence": "CC0: dataset page states 'To the extent possible under law, Anne Carpenter has waived all copyright and related or neighboring rights to out-of-focus U2OS images and ground truth. This work is published from: United States.'",
+   "files": [
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=08",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 414944,
+     "sha1": "3135ad3a400204d2a02c4eba86b1523df2a1ff2d",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_08.zip",
+     "zip_member": "BBBC006_v1_images_z_08/mcf-z-stacks-03212011_a02_s1_w1f0b893bd-3100-4054-bf16-4053f75fd2c6.tif",
+     "zip_member_header_offset": 389309246,
+     "zip_member_compressed_bytes": 406568,
+     "z_index": 8,
+     "z_offset_um_from_best_focus": -16
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=10",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 409546,
+     "sha1": "842b7b7a3728948a79daadeabbc94e314143b37e",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_10.zip",
+     "zip_member": "BBBC006_v1_images_z_10/mcf-z-stacks-03212011_a02_s1_w10de6cebc-8fa8-4279-8a02-b38af8705021.tif",
+     "zip_member_header_offset": 165601544,
+     "zip_member_compressed_bytes": 400846,
+     "z_index": 10,
+     "z_offset_um_from_best_focus": -12
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=12",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 403212,
+     "sha1": "50efe704b24000b2820bc3210a472a8c1f4db4ec",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_12.zip",
+     "zip_member": "BBBC006_v1_images_z_12/mcf-z-stacks-03212011_a02_s1_w102454f72-64be-4fb1-ae29-f7091972c028.tif",
+     "zip_member_header_offset": 626048851,
+     "zip_member_compressed_bytes": 393957,
+     "z_index": 12,
+     "z_offset_um_from_best_focus": -8
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=14",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 394932,
+     "sha1": "fd28a09977b6ef6365ee45254e9cf9e2f291d688",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_14.zip",
+     "zip_member": "BBBC006_v1_images_z_14/mcf-z-stacks-03212011_a02_s1_w1ec9eee49-25ad-46a5-a9f2-3c929dc3d2b4.tif",
+     "zip_member_header_offset": 131005185,
+     "zip_member_compressed_bytes": 385438,
+     "z_index": 14,
+     "z_offset_um_from_best_focus": -4
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=16",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 385490,
+     "sha1": "d3c152be23046589967e32aa466c6fdf028101a8",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_16.zip",
+     "zip_member": "BBBC006_v1_images_z_16/mcf-z-stacks-03212011_a02_s1_w166fea8cb-8e72-4999-9f72-ee77bfdac65f.tif",
+     "zip_member_header_offset": 224354449,
+     "zip_member_compressed_bytes": 376143,
+     "z_index": 16,
+     "z_offset_um_from_best_focus": 0
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=18",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 377620,
+     "sha1": "a7e53688756fff5315ef97ad876bfc6c2a42f572",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_18.zip",
+     "zip_member": "BBBC006_v1_images_z_18/mcf-z-stacks-03212011_a02_s1_w1ebe36734-a690-47f3-a2f9-83b58c8b620f.tif",
+     "zip_member_header_offset": 245327866,
+     "zip_member_compressed_bytes": 368717,
+     "z_index": 18,
+     "z_offset_um_from_best_focus": 4
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=20",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 378490,
+     "sha1": "02f017a6c6e5058a1bd349d1ce56bae96a226bd5",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_20.zip",
+     "zip_member": "BBBC006_v1_images_z_20/mcf-z-stacks-03212011_a02_s1_w1c9dd6cb0-e078-4ecd-b357-09757b35fdeb.tif",
+     "zip_member_header_offset": 617662350,
+     "zip_member_compressed_bytes": 369255,
+     "z_index": 20,
+     "z_offset_um_from_best_focus": 8
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=22",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 383826,
+     "sha1": "9519584df0fdc0706ae250a6ea4142ddd23238df",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_22.zip",
+     "zip_member": "BBBC006_v1_images_z_22/mcf-z-stacks-03212011_a02_s1_w171b84ff5-42b0-4ac4-9412-a1cd7abb564e.tif",
+     "zip_member_header_offset": 656293097,
+     "zip_member_compressed_bytes": 374150,
+     "z_index": 22,
+     "z_offset_um_from_best_focus": 12
+    },
+    {
+     "title": "BBBC006 a02 site1 w1 (Hoechst) z=24",
+     "description_page": "https://bbbc.broadinstitute.org/BBBC006",
+     "width": 696,
+     "height": 520,
+     "bytes": 391194,
+     "sha1": "3ae1e57e8bb62ca61f9560556af5c214b6319f83",
+     "author_credit": "Broad Bioimage Benchmark Collection BBBC006v1 (Ljosa et al., Nature Methods 2012); cells cultured by Sigrun Gustafsdottir, imaged by Tom Hasaka",
+     "container_zip_url": "https://data.broadinstitute.org/bbbc/BBBC006/BBBC006_v1_images_z_24.zip",
+     "zip_member": "BBBC006_v1_images_z_24/mcf-z-stacks-03212011_a02_s1_w10dd7b019-b046-4f13-acce-c370a5256760.tif",
+     "zip_member_header_offset": 381946289,
+     "zip_member_compressed_bytes": 381607,
+     "z_index": 24,
+     "z_offset_um_from_best_focus": 16
+    }
+   ]
+  }
+ ]
+}
