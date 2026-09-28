@@ -61,7 +61,7 @@ python3 "$here/gimp-inputs.py" "$top/$build/fusion-cli" >/dev/null || exit 1
 # shellcheck disable=SC2086
 gimp_run --timeout=1200 --flatpak $run_args --filesystem="$top" \
   --env=GIMP3_DIRECTORY="$profile" --env=FT_IN="$g/in" --env=FT_OUT="$g/got" \
-  --env=FT_ONLY="${FT_ONLY:-}" -- \
+  --env=FT_ONLY="${FT_ONLY:-}" --env=FT_IMAGES="$out/images" -- \
   gimp-console-3.2 --new-instance --no-interface --no-data --no-fonts \
   --batch-interpreter python-fu-eval -b "exec(open('$here/gimp-test.py').read())" \
   >"$g/gimp.log" 2>&1

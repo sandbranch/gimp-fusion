@@ -308,6 +308,26 @@ if case('focus-rgb'):
     dump(r.index(1), 'focus-default')
     image.delete()
 
+# ---------------------------------------------------------- real images
+real = os.environ.get('FT_IMAGES', '')
+if case('real') and real and os.path.isdir(os.path.join(real, 'mars_mahli_sol5003_grains')):
+    from gi.repository import Gio
+    d = os.path.join(real, 'mars_mahli_sol5003_grains')
+    files = sorted(f for f in os.listdir(d) if f[:2].isdigit())
+    image = Gimp.file_load(Gimp.RunMode.NONINTERACTIVE, Gio.File.new_for_path(os.path.join(d, files[0])))
+    for f in files[1:]:
+        layer = Gimp.file_load_layer(Gimp.RunMode.NONINTERACTIVE, image, Gio.File.new_for_path(os.path.join(d, f)))
+        image.insert_layer(layer, None, 0)
+    for align in ('none', 'scale'):
+        r = run(FOCUS, image, align=align, depth_map=True, crop=(align == 'scale'))
+        check(status(r) == Gimp.PDBStatusType.SUCCESS and r.index(2) is not None,
+              'Focus Stack on the MAHLI stack (8 JPEG layers), alignment %s, depth map%s: success'
+              % (align, ', cropped' if align == 'scale' else ''))
+        if status(r) == Gimp.PDBStatusType.SUCCESS:
+            image.remove_layer(r.index(1))
+            image.remove_layer(r.index(2))
+    image.delete()
+
 print('FT failures: %d' % failures, flush=True)
 quit_proc = pdb.lookup_procedure('gimp-quit')
 qc = quit_proc.create_config()

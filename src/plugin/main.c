@@ -105,7 +105,7 @@ fusion_query_procedures (GimpPlugIn *plug_in)
 static void
 add_common (GimpProcedure *procedure, const char *default_align)
 {
-  gimp_procedure_add_choice_argument (procedure, "layers", "_Layers",
+  gimp_procedure_add_choice_argument (procedure, "layers", "La_yers",
     "Which layers to use, bottom of the stack first",
     gimp_choice_new_with_values (
       "auto", FUSION_LAYERS_AUTO, "The selected ones, or all visible ones",
@@ -126,7 +126,7 @@ add_common (GimpProcedure *procedure, const char *default_align)
       "similarity", FZ_ALIGN_SIMILARITY, "Shift, rotation and scale", NULL,
       NULL),
     default_align, G_PARAM_READWRITE);
-  gimp_procedure_add_boolean_argument (procedure, "crop", "C_rop to the common area",
+  gimp_procedure_add_boolean_argument (procedure, "crop", "Crop _to the common area",
     "Crop the image to the area that all layers cover (after alignment)",
     FALSE, G_PARAM_READWRITE);
   gimp_procedure_add_int_argument (procedure, "levels", "Pyramid le_vels",
@@ -166,19 +166,19 @@ fusion_create_procedure (GimpPlugIn *plug_in, const gchar *name)
         "point, RGB or gray.",
         name);
       add_common (procedure, "none");
-      gimp_procedure_add_double_argument (procedure, "contrast", "_Contrast",
+      gimp_procedure_add_double_argument (procedure, "contrast", "Co_ntrast",
         "Exponent of the contrast weight (the Laplacian's magnitude); 0 ignores it",
         0.0, 10.0, 1.0, G_PARAM_READWRITE);
-      gimp_procedure_add_double_argument (procedure, "saturation", "_Saturation",
+      gimp_procedure_add_double_argument (procedure, "saturation", "Sat_uration",
         "Exponent of the saturation weight (the spread of R, G and B); 0 ignores it",
         0.0, 10.0, 1.0, G_PARAM_READWRITE);
       gimp_procedure_add_double_argument (procedure, "exposure", "_Well-exposedness",
         "Exponent of the well-exposedness weight (closeness to the middle); 0 ignores it",
         0.0, 10.0, 1.0, G_PARAM_READWRITE);
-      gimp_procedure_add_double_argument (procedure, "exposure-width", "Well-exposedness _width",
+      gimp_procedure_add_double_argument (procedure, "exposure-width", "Well-exposedness wi_dth",
         "Width (sigma) of the well-exposedness curve around 0.5; the paper uses 0.2",
         0.05, 1.0, 0.2, G_PARAM_READWRITE);
-      gimp_procedure_add_choice_argument (procedure, "space", "Blend in",
+      gimp_procedure_add_choice_argument (procedure, "space", "_Blend in",
         "The values the weights and the blend work on",
         gimp_choice_new_with_values (
           "perceptual", FUSION_SPACE_PERCEPTUAL, "Perceptual values (as in the paper)",
@@ -201,7 +201,7 @@ fusion_create_procedure (GimpPlugIn *plug_in, const gchar *name)
         "macro photography and microscopy.",
         name);
       add_common (procedure, "none");
-      gimp_procedure_add_choice_argument (procedure, "method", "_Method",
+      gimp_procedure_add_choice_argument (procedure, "method", "M_ethod",
         "How the sharpest layer is used",
         gimp_choice_new_with_values (
           "pyramid", FZ_FOCUS_PYRAMID, "Sharpest layer per pixel, blended",
@@ -230,7 +230,7 @@ fusion_create_procedure (GimpPlugIn *plug_in, const gchar *name)
       gimp_procedure_add_double_argument (procedure, "power", "_Power",
         "For Weighted by sharpness: the exponent of the weights",
         0.5, 20.0, 4.0, G_PARAM_READWRITE);
-      gimp_procedure_add_choice_argument (procedure, "space", "Blend in",
+      gimp_procedure_add_choice_argument (procedure, "space", "_Blend in",
         "The values the blend works on",
         gimp_choice_new_with_values (
           "image", FUSION_SPACE_IMAGE, "As the image stores them", NULL,
@@ -242,9 +242,9 @@ fusion_create_procedure (GimpPlugIn *plug_in, const gchar *name)
         "Also add a layer showing which layer was sharpest where: black is the bottom "
         "layer, white the top one, in between with a fraction from the neighbours",
         FALSE, G_PARAM_READWRITE);
-      gimp_procedure_add_double_argument (procedure, "depth-smooth", "Depth map s_moothing",
+      gimp_procedure_add_double_argument (procedure, "depth-smooth", "Depth map smoothin_g",
         "Smooth the depth map (sigma, pixels), weighing by sharpness; 0: none",
-        0.0, 50.0, 2.0, G_PARAM_READWRITE);
+        0.0, 50.0, 4.0, G_PARAM_READWRITE);
       gimp_procedure_add_layer_return_value (procedure, "layer", "Layer",
         "The focus stacked layer", FALSE, G_PARAM_READWRITE);
       gimp_procedure_add_layer_return_value (procedure, "depth-layer", "Depth layer",
@@ -260,7 +260,7 @@ fusion_create_procedure (GimpPlugIn *plug_in, const gchar *name)
         "against its neighbour. Works for brackets (other exposures) and focus stacks. "
         "The layers are transformed with GIMP's interpolation and keep their size.",
         name);
-      gimp_procedure_add_choice_argument (procedure, "layers", "_Layers",
+      gimp_procedure_add_choice_argument (procedure, "layers", "La_yers",
         "Which layers to align, bottom of the stack first",
         gimp_choice_new_with_values (
           "auto", FUSION_LAYERS_AUTO, "The selected ones, or all visible ones", NULL,
@@ -328,6 +328,12 @@ show_dialog (GimpProcedure *procedure, GimpProcedureConfig *config, const char *
       dialog = gimp_procedure_dialog_new (procedure, config, "Focus Stack");
       gimp_procedure_dialog_get_widget (GIMP_PROCEDURE_DIALOG (dialog), "method",
                                         GIMP_TYPE_INT_RADIO_FRAME);
+      /* combo boxes for the rest: the dialog stays short enough for small
+       * screens */
+      gimp_procedure_dialog_get_widget (GIMP_PROCEDURE_DIALOG (dialog), "measure",
+                                        GTK_TYPE_COMBO_BOX);
+      gimp_procedure_dialog_get_widget (GIMP_PROCEDURE_DIALOG (dialog), "space",
+                                        GTK_TYPE_COMBO_BOX);
       gimp_procedure_dialog_get_spin_scale (GIMP_PROCEDURE_DIALOG (dialog), "noise", 1.0);
       gimp_procedure_dialog_get_spin_scale (GIMP_PROCEDURE_DIALOG (dialog), "window", 1.0);
       gimp_procedure_dialog_get_spin_scale (GIMP_PROCEDURE_DIALOG (dialog), "power", 1.0);
@@ -336,9 +342,9 @@ show_dialog (GimpProcedure *procedure, GimpProcedureConfig *config, const char *
       g_value_set_string (&v, "soft");
       gimp_value_array_append (soft, &v);
       g_value_unset (&v);
+      /* (the dialog takes the array: it unrefs it when it goes) */
       gimp_procedure_dialog_set_sensitive_if_in (GIMP_PROCEDURE_DIALOG (dialog), "power",
                                                  NULL, "method", soft, TRUE);
-      gimp_value_array_unref (soft);
       gimp_procedure_dialog_set_sensitive (GIMP_PROCEDURE_DIALOG (dialog), "depth-smooth",
                                            TRUE, NULL, "depth-map", FALSE);
       gimp_procedure_dialog_fill_box (GIMP_PROCEDURE_DIALOG (dialog), "sharp-box",

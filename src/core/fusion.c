@@ -335,7 +335,7 @@ fz_focus_params_default (FzFocusParams *p)
   p->noise = 1.0;
   p->window = 2.0;
   p->power = 4.0;
-  p->depth_smooth = 2.0;
+  p->depth_smooth = 4.0;
   p->levels = 0;
   p->clip = 1;
 }
@@ -528,9 +528,11 @@ make_depth (const Pick *pk, int w, int h, double smooth, float *depth)
         {
           float c = pk->idx[i] >= 0 ? FZ_MAX (pk->best[i], 0.0f) : 0.0f;
 
-          /* the confidence is the sharpness; a floor keeps flat areas
-           * from being left without any */
-          c = sqrtf (c) + 1e-6f * (pk->idx[i] >= 0);
+          /* the confidence is the sharpness itself (its square root left
+           * the specks of shadows and flat gaps, which no layer shows
+           * sharply, in the map); a floor keeps flat areas from being left
+           * without any */
+          c = c + 1e-12f * (pk->idx[i] >= 0);
           num[i] = c * depth[i];
           den[i] = c;
         }
