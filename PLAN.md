@@ -57,12 +57,15 @@ Broadway, benchmarks.
   GIMP_TYPE_INT_RADIO_FRAME; GIMP_TYPE_STRING_COMBO_BOX is ignored
   silently (the default widget is used). Radio frame titles cannot carry
   mnemonics, and GIMP then warns "no mnemonic for property".
-- babl can give u8 and u16 values as floats that differ by an ulp between
-  "R'G'B' float" and "R'G'B'A float"; Mertens' weights are discontinuous
-  where no frame has contrast, so an ulp can change a pixel of the
-  result. babl also chooses its conversion paths partly by timing, so
-  two processes (or one under load) can differ; the GIMP tests therefore
-  compare with the layers exactly as the plug-in read them
+- babl may convert the same pixels by different paths: it accepts any
+  path whose error stays within BABL_TOLERANCE (4.7e-6), picks by cost,
+  and times its lookup tables (babl_ticks) to decide whether to use them
+  (babl/babl-fish-path.c, master, read 2026-09-28). So two processes, or
+  one under load, can read a u8 or u16 layer as floats a few 1e-6 apart;
+  "R'G'B' float" and "R'G'B'A float" differed too. Mertens' weights are
+  discontinuous where no frame has contrast, so such a difference can
+  change a pixel of the result visibly (0.004 seen once). The GIMP tests
+  therefore compare with the layers exactly as the plug-in read them
   (FUSION_DUMP_INPUTS).
 - OpenCV's MergeMertens matches Mertens' method best with one pyramid
   level more than his code uses (measured, not read in OpenCV's source).
