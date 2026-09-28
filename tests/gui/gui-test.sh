@@ -141,12 +141,12 @@ if [ "${GUI_DOCS:-0}" = 1 ]; then
 import sys
 from PIL import Image
 out, docs = sys.argv[1:]
-for shot, name, box in (('01-image-menu', 'image-menu', (0, 30, 700, 700)),
-                        ('02-exposures-dialog', 'exposures-dialog', None),
+for shot, name, box in (('01-image-menu', 'image-menu', (0, 0, 700, 680)),
+                        ('02-exposures-dialog', 'exposures-dialog', (120, 118, 546, 676)),
                         ('03-exposures-result', 'exposures-result', None),
-                        ('04-focus-dialog', 'focus-dialog', None),
+                        ('04-focus-dialog', 'focus-dialog', (120, 118, 546, 822)),
                         ('05-focus-result', 'focus-result', None),
-                        ('06-align-dialog', 'align-dialog', None)):
+                        ('06-align-dialog', 'align-dialog', (120, 118, 546, 510))):
     try:
         im = Image.open('%s/%s.png' % (out, shot))
         (im.crop(box) if box else im).save('%s/%s.png' % (docs, name))

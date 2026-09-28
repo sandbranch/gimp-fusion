@@ -35,6 +35,7 @@ typedef struct
   gboolean      linear;
   gboolean      any_alpha;  /* a layer has alpha, a mask, or does not cover the canvas */
   int           loads;
+  guint64       dumped;     /* FUSION_DUMP_INPUTS: the layers written */
 } LayerSource;
 
 /* the layers to fuse, bottom of the stack first; NULL with *error */

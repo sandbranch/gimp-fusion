@@ -53,7 +53,7 @@ fi
 in_sdk meson configure "$build" "-Dplugindir=$profile/plug-ins" >/dev/null
 in_sdk ninja -C "$build" install >"$out/build.log" 2>&1 || { cat "$out/build.log"; exit 1; }
 rm -rf "$out/sanitizer" "$g"
-mkdir -p "$out/sanitizer" "$g/got"
+mkdir -p "$out/sanitizer" "$g/got" "$g/plugin-in"
 status=0
 
 python3 "$here/gimp-inputs.py" "$top/$build/fusion-cli" >/dev/null || exit 1
@@ -61,7 +61,8 @@ python3 "$here/gimp-inputs.py" "$top/$build/fusion-cli" >/dev/null || exit 1
 # shellcheck disable=SC2086
 gimp_run --timeout=1200 --flatpak $run_args --filesystem="$top" \
   --env=GIMP3_DIRECTORY="$profile" --env=FT_IN="$g/in" --env=FT_OUT="$g/got" \
-  --env=FT_ONLY="${FT_ONLY:-}" --env=FT_IMAGES="$out/images" -- \
+  --env=FT_ONLY="${FT_ONLY:-}" --env=FT_IMAGES="$out/images" \
+  --env=FUSION_DUMP_INPUTS="$g/plugin-in" -- \
   gimp-console-3.2 --new-instance --no-interface --no-data --no-fonts \
   --batch-interpreter python-fu-eval -b "exec(open('$here/gimp-test.py').read())" \
   >"$g/gimp.log" 2>&1
@@ -77,9 +78,8 @@ if [ -z "${FT_ONLY:-}" ]; then
     in_sdk sh tests/output/gimp/expect.sh >"$g/expect.log" 2>&1 ||
       { echo "FT FAIL fusion-cli could not make the expected results"; tail "$g/expect.log"; status=1; }
     # the layers Align Layers by Content moved, aligned once more: nothing left
-    # shellcheck disable=SC2086
-    in_sdk "$build/fusion-cli align --model=translation $(ls "$g"/got/aligned-*.pfm | tr '\n' ' ')" \
-      >"$g/realign.txt" 2>&1
+    set -- "$g"/got/aligned-*.pfm
+    in_sdk "$build/fusion-cli align --model=translation $*" >"$g/realign.txt" 2>&1
     python3 "$here/gimp-compare.py" || status=1
 fi
 for report in "$out"/sanitizer/*; do

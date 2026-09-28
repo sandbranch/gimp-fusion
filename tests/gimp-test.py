@@ -81,7 +81,23 @@ def make_image(name, count, precision, linear=False, pick=None, tag=None):
         layer.update(0, 0, w, h)
         if tag:
             dump(layer, 'in-%s-%02d' % (tag, i), linear)
+    if tag:
+        tags[image.get_id()] = (tag, len(files))
     return image
+
+
+tags = {}
+
+
+def take_plugin_inputs():
+    """the layers as the plug-in read them (FUSION_DUMP_INPUTS), in place of
+    this script's own reading, for the tagged images"""
+    d = os.environ.get('FUSION_DUMP_INPUTS')
+    for image_id, (tag, n) in tags.items():
+        for k in range(n):
+            src = os.path.join(d, 'image-%d-layer-%d.pfm' % (image_id, k))
+            if d and os.path.exists(src):
+                os.replace(src, os.path.join(out, 'in-%s-%02d.pfm' % (tag, k)))
 
 
 def dump(drawable, name, linear=False):
@@ -328,6 +344,7 @@ if case('real') and real and os.path.isdir(os.path.join(real, 'mars_mahli_sol500
             image.remove_layer(r.index(2))
     image.delete()
 
+take_plugin_inputs()
 print('FT failures: %d' % failures, flush=True)
 quit_proc = pdb.lookup_procedure('gimp-quit')
 qc = quit_proc.create_config()

@@ -94,6 +94,35 @@ fusion_collect_layers (GimpImage *image, FusionLayers which, int *n, GError **er
 
 /* ---------------------------------------------------------------- reading */
 
+/* for the tests: with FUSION_DUMP_INPUTS set to a folder, every layer is
+ * written there as the plug-in read it, once (image-<id>-layer-<k>.pfm),
+ * so that the tests compare with exactly these values (babl may convert
+ * by different paths in different processes) */
+static void
+dump_input (LayerSource *ls, int k, const FzImage *img)
+{
+  const char *dir = g_getenv ("FUSION_DUMP_INPUTS");
+  gchar      *path;
+  FILE       *f;
+  int         x, y, ch;
+  size_t      n = (size_t) img->w * img->h;
+
+  if (! dir || ! *dir || k >= 64 || (ls->dumped & ((guint64) 1 << k)))
+    return;
+  ls->dumped |= (guint64) 1 << k;
+  path = g_strdup_printf ("%s/image-%d-layer-%d.pfm", dir, gimp_image_get_id (ls->image), k);
+  f = fopen (path, "wb");
+  g_free (path);
+  if (! f)
+    return;
+  fprintf (f, "%s\n%d %d\n-1.0\n", img->c == 3 ? "PF" : "Pf", img->w, img->h);
+  for (y = img->h - 1; y >= 0; y--)
+    for (x = 0; x < img->w; x++)
+      for (ch = 0; ch < img->c; ch++)
+        fwrite (&img->p[ch * n + (size_t) y * img->w + x], sizeof (float), 1, f);
+  fclose (f);
+}
+
 static int
 load_layer (void *data, int k, FzImage *img, float *valid, char **error)
 {
@@ -173,6 +202,7 @@ load_layer (void *data, int k, FzImage *img, float *valid, char **error)
   if (mbuf)
     g_object_unref (mbuf);
 
+  dump_input (ls, k, img);
   /* outside the layer: its edge repeated */
   for (ch = 0; ch < c; ch++)
     {

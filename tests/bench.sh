@@ -25,6 +25,8 @@ gimp_build=${GIMP_BUILD:-$devtools/gimp-build.sh}
 status=0
 
 echo "== the core (fusion-cli), $(nproc) threads"
+# (expanded by the shell in the SDK)
+# shellcheck disable=SC2016
 "$gimp_build" "$top" 'c=tests/output/build/fusion-cli
   for a in "exposures --synthetic=6000,4000,5,3" \
            "exposures --synthetic=6000,4000,5,3 --align=similarity" \
