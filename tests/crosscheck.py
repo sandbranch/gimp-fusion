@@ -13,7 +13,7 @@
 #              the error at the corners, and fusion after alignment
 #
 # fusion-cli is FUSION_CLI_EXE; all runs go through one shell started by
-# the command in FUSION_RUN (tests/crosscheck.sh: gimp-build.sh, in the SDK). Prints "XC PASS ..." or
+# the command in FUSION_RUN (tests/crosscheck.sh: gimp-build.sh). Prints "XC PASS ..." or
 # "XC FAIL ..." per check and the numbers into tests/output/crosscheck.json.
 #
 # Copyright 2026 David
@@ -36,7 +36,7 @@ out = os.path.join(here, 'output', 'cross')
 os.makedirs(out, exist_ok=True)
 failures = 0
 results = {}
-jobs = []   # (label, argv) run in one go through the SDK
+jobs = []   # (label, argv) run in one go through FUSION_RUN
 
 
 def check(ok, what):
@@ -66,7 +66,7 @@ def save_stack(name, frames):
 
 
 def run_all():
-    """runs the queued fusion-cli calls in one shell (one start of the SDK)"""
+    """runs the queued fusion-cli calls in one shell"""
     script = os.path.join(out, 'jobs.sh')
     with open(script, 'w') as f:
         f.write('set -u\n')

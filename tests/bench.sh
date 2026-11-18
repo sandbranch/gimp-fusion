@@ -25,7 +25,7 @@ gimp_build=${GIMP_BUILD:-$devtools/gimp-build.sh}
 status=0
 
 echo "== the core (fusion-cli), $(nproc) threads"
-# (expanded by the shell in the SDK)
+# (expanded by the shell of gimp-build.sh)
 # shellcheck disable=SC2016
 "$gimp_build" "$top" 'c=tests/output/build/fusion-cli
   for a in "exposures --synthetic=6000,4000,5,3" \
@@ -40,7 +40,7 @@ echo "== the core (fusion-cli), $(nproc) threads"
 echo "== the plug-in in GIMP"
 [ -x "$out/profile/plug-ins/gimp-fusion/gimp-fusion" ] ||
   { echo "run tests/gimp-test.sh first"; exit 1; }
-gimp_run --timeout=1800 --flatpak --filesystem="$top" --env=GIMP3_DIRECTORY="$out/profile" \
+gimp_run --timeout=1800 --env=GIMP3_DIRECTORY="$out/profile" \
   --env=FUSION_STATS=1 --env=BENCH_ONLY="${BENCH_ONLY:-}" -- \
   gimp-console-3.2 --new-instance --no-interface --no-data --no-fonts \
   --batch-interpreter python-fu-eval -b "exec(open('$here/bench-gimp.py').read())" \

@@ -1,7 +1,7 @@
 #!/bin/sh
 # The core on real, freely licensed images (tests/real.py): fetches them
 # once (tests/images/fetch.py, SHA-1 checked; skipped sets without
-# network), runs fusion-cli in the Flatpak SDK, isolated from your folders.
+# network), runs fusion-cli natively, isolated from your folders.
 #
 # Copyright 2026 David
 # SPDX-License-Identifier: GPL-3.0-or-later

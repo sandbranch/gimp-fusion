@@ -1,5 +1,5 @@
 #!/bin/sh
-# Tests the plug-in in the Flatpak GIMP without a window: tests/gimp-inputs.py
+# Tests the plug-in in the native GIMP without a window: tests/gimp-inputs.py
 # writes the inputs and fusion-cli the expected results; tests/gimp-test.py
 # runs Merge Exposures, Focus Stack and Align Layers by Content in GIMP on
 # images of 8 and 16 bits and floating point, RGB and gray, with selections,
@@ -8,7 +8,7 @@
 #
 #   tests/gimp-test.sh            as usual
 #   tests/gimp-test.sh --asan     the plug-in built with AddressSanitizer and
-#                                 UBSan (GIMP runs with the SDK: --devel)
+#                                 UBSan
 #   FT_ONLY=micro tests/gimp-test.sh   only the GIMP cases whose names match
 #
 # GIMP runs with a throwaway profile in tests/output (the plug-in is
@@ -33,7 +33,7 @@ export GIMP_RUN_HOME
 . "$here/isolate.sh"
 snapshot_take "$out/snapshot-gimp-before.txt"
 gimp_build=${GIMP_BUILD:-$devtools/gimp-build.sh}
-in_sdk () { "$gimp_build" "$top" "$*"; }
+in_build () { "$gimp_build" "$top" "$*"; }
 
 build=tests/output/build
 profile=$out/profile
@@ -41,17 +41,17 @@ run_args=
 if [ "$1" = --asan ]; then
     build=tests/output/build-asan
     profile=$out/profile-asan
-    run_args="--devel --env=ASAN_OPTIONS=log_path=$out/sanitizer/asan:detect_leaks=0 \
+    run_args="--env=ASAN_OPTIONS=log_path=$out/sanitizer/asan:detect_leaks=0 \
       --env=UBSAN_OPTIONS=log_path=$out/sanitizer/ubsan:print_stacktrace=1"
     [ -f "$top/$build/build.ninja" ] ||
-      in_sdk meson setup "$build" -Db_sanitize=address,undefined -Db_lundef=false \
+      in_build meson setup "$build" -Db_sanitize=address,undefined -Db_lundef=false \
         "-Dplugindir=$profile/plug-ins" >"$out/setup-asan.log" 2>&1 ||
       { cat "$out/setup-asan.log"; exit 1; }
 fi
-[ -f "$top/$build/build.ninja" ] || in_sdk meson setup "$build" >"$out/setup.log" 2>&1 ||
+[ -f "$top/$build/build.ninja" ] || in_build meson setup "$build" >"$out/setup.log" 2>&1 ||
   { cat "$out/setup.log"; exit 1; }
-in_sdk meson configure "$build" "-Dplugindir=$profile/plug-ins" >/dev/null
-in_sdk ninja -C "$build" install >"$out/build.log" 2>&1 || { cat "$out/build.log"; exit 1; }
+in_build meson configure "$build" "-Dplugindir=$profile/plug-ins" >/dev/null
+in_build ninja -C "$build" install >"$out/build.log" 2>&1 || { cat "$out/build.log"; exit 1; }
 rm -rf "$out/sanitizer" "$g"
 mkdir -p "$out/sanitizer" "$g/got" "$g/plugin-in"
 status=0
@@ -59,7 +59,7 @@ status=0
 python3 "$here/gimp-inputs.py" "$top/$build/fusion-cli" >/dev/null || exit 1
 
 # shellcheck disable=SC2086
-gimp_run --timeout=1200 --flatpak $run_args --filesystem="$top" \
+gimp_run --timeout=1200 $run_args \
   --env=GIMP3_DIRECTORY="$profile" --env=FT_IN="$g/in" --env=FT_OUT="$g/got" \
   --env=FT_ONLY="${FT_ONLY:-}" --env=FT_IMAGES="$out/images" \
   --env=FUSION_DUMP_INPUTS="$g/plugin-in" -- \
@@ -75,11 +75,11 @@ fi
 
 if [ -z "${FT_ONLY:-}" ]; then
     # the expected results, from fusion-cli on the layers as GIMP read them
-    in_sdk sh tests/output/gimp/expect.sh >"$g/expect.log" 2>&1 ||
+    in_build sh tests/output/gimp/expect.sh >"$g/expect.log" 2>&1 ||
       { echo "FT FAIL fusion-cli could not make the expected results"; tail "$g/expect.log"; status=1; }
     # the layers Align Layers by Content moved, aligned once more: nothing left
     set -- "$g"/got/aligned-*.pfm
-    in_sdk "$build/fusion-cli align --model=translation $*" >"$g/realign.txt" 2>&1
+    in_build "$build/fusion-cli align --model=translation $*" >"$g/realign.txt" 2>&1
     python3 "$here/gimp-compare.py" || status=1
 fi
 for report in "$out"/sanitizer/*; do

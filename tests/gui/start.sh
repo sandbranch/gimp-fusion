@@ -1,5 +1,5 @@
 #!/bin/sh
-# Starts the Flatpak GIMP on a Broadway display, on the port
+# Starts the native GIMP on a Broadway display, on the port
 # GUI_BROADWAY_PORT (the page is http://127.0.0.1:port/), with
 # tests/gui/gui-script.py, in the profile of tests/gimp-test.sh (which
 # installs the plug-in there). Isolated from your folders like the other
@@ -31,7 +31,7 @@ rm -f "$profile"/plug-in-settings/GimpProcedureConfigRun-plug-in-fusion-*.last
 # no Welcome dialog: GIMP shows it when the profile is of an older
 # version, or when asked to
 if ! grep -q config-version "$profile/gimprc" 2>/dev/null; then
-    version=$(LC_ALL=C flatpak info org.gimp.GIMP | sed -n 's/^ *Version: *//p')
+    version=$(gimp-console-3.2 --version | sed 's/.* //')
     printf '(config-version "%s")\n' "$version" >> "$profile/gimprc"
 fi
 grep -q show-welcome-dialog "$profile/gimprc" 2>/dev/null ||
@@ -64,15 +64,15 @@ cat > "$profile/sessionrc" <<SESSION
 (show-tabs yes)
 SESSION
 # GUI_ASAN=1: the plug-in of tests/gimp-test.sh --asan, in its profile,
-# with the SDK (its sanitizer runtimes); reports in tests/output/sanitizer
-devel=
+# reports in tests/output/sanitizer
+asan_env=
 if [ "${GUI_ASAN:-0}" = 1 ]; then
     profile=$tests/output/profile-asan
     mkdir -p "$tests/output/sanitizer"
-    devel="--devel --env=ASAN_OPTIONS=log_path=$tests/output/sanitizer/gui-asan:detect_leaks=0:allow_user_segv_handler=0"
+    asan_env="--env=ASAN_OPTIONS=log_path=$tests/output/sanitizer/gui-asan:detect_leaks=0:allow_user_segv_handler=0"
 fi
 # shellcheck disable=SC2086
-gimp_run --flatpak $devel --filesystem="$src" \
+gimp_run $asan_env \
   --env=GDK_BACKEND=broadway --env=BROADWAY_DISPLAY=:$display \
   --env=GIMP3_DIRECTORY="$profile" --env=GUI_OUT="$out" \
   --env=GUI_IMAGES="$tests/output/images" \

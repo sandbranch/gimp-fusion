@@ -30,10 +30,9 @@ The old Exposure Blend script is GIMP 2 only. G'MIC has only experimental
 exposure fusion filters in its Testing section. The one GIMP 3 focus
 stacking plug-in found, dcknuth/gimp_focus_stack, is a Windows-only wrapper
 around `focus-stack.exe` with 8-bit JPEG output. Wrappers around enfuse or
-Hugin's `align_image_stack` are no answer either: the Flatpak GIMP cannot
-start programs on the host (not without a `flatpak override` by the
-user). So everything here is done in the plug-in
-itself.
+Hugin's `align_image_stack` are no answer either: they need those programs
+installed besides GIMP and pass every layer through files on disk. So
+everything here is done in the plug-in itself.
 
 ## Using it
 
@@ -179,8 +178,8 @@ Catmull-Rom interpolation (or, in Align Layers by Content, by GIMP).
     tests/run.sh
 
 runs everything below; each part also runs alone. Everything builds and
-runs inside the GIMP Flatpak and its SDK
-([gimp-devtools](../gimp-devtools)), isolated from your folders: a
+runs against the native GIMP ([gimp-devtools](../gimp-devtools)),
+isolated from your folders: a
 listing of your GIMP, Blender, Godot, Krita and Tiled folders before and
 after must be the same. Nothing is installed.
 
@@ -290,14 +289,17 @@ GIMP.)
 
 ## Building and installing
 
-With the Flatpak GIMP and [gimp-devtools](../gimp-devtools):
+For the native GIMP 3. Needs gimp-3.0 >= 3.0 (tested with 3.2.8), meson,
+ninja and a C compiler with OpenMP (optional); on Debian and Ubuntu:
 
-    gimp-build.sh . meson setup build -Dplugindir=\$GIMP_PLUGINDIR
-    gimp-build.sh . ninja -C build install
+    sudo apt install gimp libgimp-3.0-dev meson ninja-build
 
-or natively `meson setup build -Dplugindir=~/.config/GIMP/3.2/plug-ins &&
-ninja -C build install`. Needs gimp-3.0 >= 3.0 (tested with 3.2.6) and a
-C compiler with OpenMP (optional). `-Dplugin=disabled` builds only the
+Then, from this folder, into your GIMP's plug-in folder:
+
+    meson setup build -Dplugindir=$HOME/.config/GIMP/3.2/plug-ins
+    ninja -C build install
+
+Restart GIMP after installing. `-Dplugin=disabled` builds only the
 core, fusion-cli and the unit tests.
 
 ## Licences

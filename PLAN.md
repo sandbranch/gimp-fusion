@@ -10,8 +10,8 @@ correlation and Gauss-Newton (shift, scale, rotation), chained through
 neighbours. Tested with tests/run.sh: unit tests (also under ASan and
 UBSan), cross-checks against a numpy port of Mertens' Matlab code and
 OpenCV, synthetic scenes with known answers, the plug-in in GIMP 3.2.6
-(Flatpak, also under ASan), real CC0 and NASA images, the dialogs on
-Broadway, benchmarks.
+(then the Flatpak) and the native GIMP 3.2.8 (also under ASan), real CC0
+and NASA images, the dialogs on Broadway, benchmarks.
 
 ## Next
 

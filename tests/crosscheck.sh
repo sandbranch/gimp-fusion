@@ -2,7 +2,7 @@
 # Measures the core against references and ground truth (tests/crosscheck.py):
 # exposure fusion against a numpy port of Mertens' Matlab code and against
 # OpenCV's MergeMertens, focus stacks and alignment against synthetic data
-# with known answers. fusion-cli is built and run inside the Flatpak SDK
+# with known answers. fusion-cli is built and run natively
 # (gimp-devtools/gimp-build.sh), isolated from your folders (tests/output/
 # gimp-home); python3 with numpy and scipy runs on the host.
 #

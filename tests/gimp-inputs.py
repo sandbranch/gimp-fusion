@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # Writes the inputs of tests/gimp-test.py (PFM files in tests/output/gimp/in)
 # and a shell script of fusion-cli runs that make the expected results
-# (tests/output/gimp/expect), which tests/gimp-test.sh runs in the SDK.
+# (tests/output/gimp/expect), which tests/gimp-test.sh runs through gimp-build.sh.
 #
 # Copyright 2026 David
 # SPDX-License-Identifier: GPL-3.0-or-later
